@@ -1,0 +1,59 @@
+/**タイトル(位置・デザイン)**/
+.page-title{
+    text-align: center;
+    border: 5px groove #000;
+    background-image: linear-gradient(to right, #ffa500, #ffd700, #ffff00, #adff2f, #00ff00, #7cfc00, #00fa9a, #7fffd4, #87cefa, #00bfff, #1e90ff, #ba55d3, #ee82ee, #ff1493, #dc143c);
+}
+
+/**中段の位置**/
+.middle{
+    text-align: center;
+}
+
+/**中段(画像)のデザイン**/
+.selected-poke-image{
+    transform: scale(0.7);
+    border: 1px solid #000;
+    padding: auto;
+    margin: auto;
+}
+
+/**ボタンの位置**/
+.control-buttons{
+    text-align: center;
+}
+
+/**中段の要素・ボタンのデザイン**/
+.selected-poke-title,
+.selected-poke-type,
+.selected-poke-info,
+.control-buttons {
+    font-size: 20px;
+}
+
+/**画像出力のフィールドのデザイン**/
+.display-poke-list {
+  display: flex;
+  flex-wrap: nowrap; /* 折り返しOK */
+  gap: 8px; /* 画像の間にちょっと余白 */
+  justify-content: flex-start; /* 左寄せ */
+  overflow-x: auto; /* 横スクロールを有効にする */
+  white-space: nowrap; /* 折り返し防止（念のため） */
+  padding: 10px;
+  scroll-behavior: smooth; /* スムーズスクロール（お好みで） */
+}
+
+/**個々の画像のデザイン**/
+.display-poke-list img {
+  width: 100px; /* 固定サイズでもOK */
+  max-width: 100px; /* 画面が狭いときの上限 */
+  flex-shrink: 0; /* 縮まないようにする */
+  height: auto;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+/**画像マウスオーバー時のデザイン**/
+.display-poke-list img:hover {
+  transform: scale(1.3); /* ホバーでちょっと拡大 */
+}
