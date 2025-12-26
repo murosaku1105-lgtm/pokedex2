@@ -69,6 +69,15 @@
     text-align: center;
     border: 1px solid #000;
   }
+
+/*横並びにするためにASPX外から追加*/
+.type-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px; /* アイコン間の余白 */
+  margin-bottom: 10px;
+}
+
   
 /*アイコンイメージのデザイン*/
 .type-icon {
