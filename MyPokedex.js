@@ -141,7 +141,7 @@ const PokeProject = (() => {
     getMinNo: async function(){
       if(flag){
         try{
-          const res = await fetch("http://localhost:3001/api/poke/minNo");
+          const res = await fetch("/api/poke/minNo");
           const data = await res.json();
           pokeMinNo = Number(data.min);
         }
@@ -155,7 +155,7 @@ const PokeProject = (() => {
     getMaxNo: async function(){
       if(flag){
         try{
-          const res = await fetch("http://localhost:3001/api/poke/maxNo");
+          const res = await fetch("/api/poke/maxNo");
           const data = await res.json();
           pokeMaxNo = Number(data.max);
         }
@@ -172,7 +172,7 @@ const PokeProject = (() => {
           pokeTargetNo = getNo
         
         try{
-          const res = await fetch(`http://localhost:3001/api/poke?pokeid=${pokeTargetNo}`);
+          const res = await fetch(`/api/poke?pokeid=${pokeTargetNo}`);
           const data = await res.json();
           pokeNo = data.pokeid;
             pokeName = data.name;
