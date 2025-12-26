@@ -1,0 +1,118 @@
+/*Topのデザイン*/
+.top {
+  text-align: center;
+  border: 5px groove #000;
+  background-image: linear-gradient(to right, #ffa500, #ffd700, #ffff00, #adff2f, #00ff00, #7cfc00, #00fa9a, #7fffd4, #87cefa, #00bfff, #1e90ff, #ba55d3, #ee82ee, #ff1493, #dc143c);
+}
+
+/*検索フィールド配置のデザイン*/
+.search-area {
+  text-align: center;
+}
+
+/*ラベル浮彫のためのデザイン1*/
+.search-wrapper {
+  position: relative;
+  border: 2px solid #000;
+  border-radius: 8px;
+  padding: 30px 20px 20px 20px;
+  margin: 40px auto;
+  width: fit-content;
+  background-color: #f9f9f9;
+}
+
+/*ラベル浮彫のためのデザイン2*/
+.search-label {
+  position: absolute;
+  top: -35px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 16px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #000;
+  background-color: #fff;
+  border: 2px solid #000;
+  border-radius: 8px;
+  z-index: 10;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+/*Lbl・TxtSearchNameのデザイン*/
+.left-and-right {
+  /*ラベル・テキストボックスを並列*/
+  display: flex;
+  text-align: center;
+  /*ラベル・テキストボックス中央揃え*/
+  justify-content: center;
+}
+
+/*検索フィールドのプロパティのデザイン*/
+#LblSearchText,
+#TxtSearchName,
+#DdlSearchRegion,
+#DdlSearchGen,
+#BtnSearch {
+  font-size: 20px;
+}
+
+/*タイプテーブル配置のデザイン*/
+.type-table {
+  margin: 10px auto;
+  border-collapse: collapse;
+}
+
+  /*タイプテーブル装飾のデザイン*/
+  .type-table td {
+    padding: 15px;
+    text-align: center;
+    border: 1px solid #000;
+  }
+  
+/*アイコンイメージのデザイン*/
+.type-icon {
+  width: 48px;
+  height: 48px;
+  display: block;
+  margin: 0 auto;
+}
+
+  /*アイコン: マウスオーバー時のデザイン*/
+  .type-icon:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+  }
+
+  /*アイコン: 選択時のデザイン*/
+  .type-icon.selected {
+    background-color: #fff;
+    filter: brightness(1.2);
+    border: 1px solid #000;
+  }
+
+/*アイコンイメージのデザイン*/
+.middle {
+  text-align: center;
+  font-size: 20px;
+}
+
+/*個体の画像のデザイン*/
+.middle-each-image {
+  height: 100px;
+  width: 100px;
+}
+
+/*リストテーブルのデザイン*/
+.poke-table {
+  margin: 0 auto;
+  border-collapse: collapse;
+  text-align: center;
+}
+
+
+  .poke-table th,
+  .poke-table td {
+    padding: 8px;
+    border: 1px solid #ccc;
+  }
