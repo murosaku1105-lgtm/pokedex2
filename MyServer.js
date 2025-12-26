@@ -1,262 +1,174 @@
-// MyServer.js
-const express = require("express");
-const cors = require("cors");
-const { Pool } = require("pg");
-const path = require("path");
+const PokeSearch = (() => {
+  'use strict';
+  let
+  func,
+  flag,
+  active;
 
-const app = express();
-const port = 3001;
+  let selectedTypes = [];
 
-app.use(cors());
-app.use(express.json());
-// 静的ファイル公開
-app.use(express.static(path.join(__dirname)));
+  const conf ={
+    search_field: `search-field`,
+  };
+  func = {
+    init: function(){
+      flag = true;
+      return this;
+    },
+    initTypeTable: function(){
+      if(flag){
+        fetch('/api/poke/type')
+          .then(res => res.json())
+          .then(types => func.renderTypeTable(types));
+      }
+      return this;
+    },
+    renderTypeTable: function(types){
+      if(flag){
+        const areaTypes = document.getElementById('TblSearchType');
+        areaTypes.innerHTML = "";
 
-// PostgreSQL 接続設定
-const pool = new Pool({
-  host: "127.0.0.1",
-  user: "postgres",
-  password: "postgres",
-  database: "pokedb",
-  port: 5432,
-});
+        let row;
+        types.forEach((t, i) => {
+          if(i % 6 === 0){
+            row = document.createElement("div");
+            row.classList.add("type-row");
+            areaTypes.appendChild(row);
+          }
+          const img = document.createElement("img");
+          img.src= t.pathtype;
+          img.dataset.typeid = t.typeid;
+          img.classList.add("type-icon");
+          img.addEventListener("click", () => func.toggleTypeSelection(img));
+          row.appendChild(img);
+        });
+      }
+      return this;
+    },
+    initRegionList: function(){
+      if(flag){
+        fetch("/api/poke/region")
+          .then(res => res.json())
+          .then(regions => func.renderRegionList(regions));
+      }
+      return this;
+    },
+    renderRegionList(regions){
+      if(flag){
+        const ddlRegion = document.getElementById("DdlSearchRegion");
 
-// 接続確認（任意だが強く推奨）
-pool.connect()
-  .then(() => console.log("PostgreSQL connected"))
-  .catch(err => console.error("DB connection error", err));
+        regions.forEach(r => {
+          const opt = document.createElement("option");
+          opt.value = r.regionid;
+          opt.textContent = `${r.regionid}: ${r.region}`;
+          ddlRegion.appendChild(opt);
+        });
+      }
+      return this;
+    },
+    initGenList: function(){
+      if(flag){
+        fetch("/api/poke/gen")
+          .then(res => res.json())
+          .then(gens => func.renderGenList(gens));
+      }
+      return this;
+    },
+    renderGenList: function(gens){
+      if(flag){
+        const ddlGen = document.getElementById("DdlSearchGen");
 
-// NoのMin値を取得
-app.get("/api/poke/minNo", async (req, res) => {
-  try {
-    const query = `
-      SELECT
-      Min(pokeid) AS min
-      FROM
-      viewpokedex
-    `;
-    const result = await pool.query(query);
+        gens.forEach(g => {
+          const opt = document.createElement("option");
+          opt.value = g.genid;
+          opt.textContent = `${g.genid}: ${g.gen}`;
+          ddlGen.appendChild(opt);
+        });
+      }
+      return this;
+    },
+    searchPoke: function(){
+      if(flag){
+        const name = document.getElementById("TxtSearchName").value;
+        const types = selectedTypes;
+        const region = document.getElementById("DdlSearchRegion").value;
+        const gen = document.getElementById("DdlSearchGen").value;
 
-    const minNo = result.rows[0]?.min ?? 0;
+        fetch("/api/poke/search", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({name, types, region, gen})
+        })
+        .then(res => res.json())
+        .then(data => func.renderSearchResult(data));
+      }
+      return this;
+    },
+    toggleTypeSelection: function(img){
+      if(flag){
+        const typeId = Number(img.dataset.typeid);
 
-    res.json({ min: minNo });
+        if(selectedTypes.includes(typeId))
+        {
+          selectedTypes = selectedTypes.filter(x => x !== typeId);
+          img.classList.remove("selected");
+        }
+        else
+        {
+          selectedTypes.push(typeId);
+          img.classList.add("selected");
+        }
+      }
+      return this;
+    },
+    renderSearchResult: function(list){
+      if(flag){
+        const body = document.getElementById("SearchResultBody");
+        body.innerHTML = "";
 
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
-  }
-});
+        if(list.length ===0)
+        {
+          document.getElementById("LblNoResult").style.display = "block";
+          return;
+        }
 
-// NoのMax値を取得
-app.get("/api/poke/maxNo", async (req, res) => {
-  try {
-    const query = `
-      SELECT
-      Max(pokeid) AS max
-      FROM
-      viewpokedex
-    `;
-    const result = await pool.query(query);
-
-    const maxNo = result.rows[0]?.max ?? 0;
-
-    res.json({ max: maxNo });
-
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
-  }
-});
-
-// タイプ全体の取得
-app.get("/api/poke/type", async (req, res) => {
-  try {
-    const query = `
-      SELECT
-      typeid,
-      type,
-      pathtype
-      FROM
-      tbltype
-    `;
-
-    const result = await pool.query(query);
-    res.json(result.rows);
-
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
-  }
-});
-
-// 地方全体の取得
-app.get("/api/poke/region", async (req, res) => {
-  try {
-    const query = `
-      SELECT
-      regionid,
-      region
-      FROM
-      tblregion
-    `;
-
-    const result = await pool.query(query);
-    res.json(result.rows);
-    
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
-  }
-});
-
-// 世代全体の取得
-app.get("/api/poke/gen", async (req, res) => {
-  try {
-    const query = `
-      SELECT
-      genid,
-      gen
-      FROM
-      tblgen
-    `;
-
-    const result = await pool.query(query);
-    res.json(result.rows);
-
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
-  }
-});
-
-//基本情報取得(1件)
-app.get("/api/poke", async (req, res) => {
-  try {
-    const pokeId = req.query.pokeid ?? 1;
-
-    const query = `
-      SELECT
-      pokeid,
-      name,
-      type1,
-      type2,
-      region,
-      gen,
-      pathnormal,
-      pathshiny
-      FROM
-      viewpokedex
-      WHERE PokeID = $1
-    `;
-
-    const result = await pool.query(query, [pokeId]);
-
-    if (result.rows.length === 0) {
-      res.status(404).json({ message: "Pokemon is not found" });
-    } else {
-      res.json(result.rows[0]);
+        document.getElementById("LblNoResult").style.display = "none";
+        list.forEach(p => {
+          const tr = document.createElement("tr");
+          tr.innerHTML =
+          `
+          <td><img src="${p.pathnormal}" class="middle-each-image"></td>
+          <td>${p.pokeid}</td>
+          <td>${p.name}</td>
+          <td>${p.type1}${p.type2 ? "・" + p.type2 : ""}</td>
+          <td>${p.region}</td>
+          <td>${p.gen}</td>
+          <td><a href="MyPokedex.html?No=${p.pokeid}">リンク</a></td>
+          `;
+          body.appendChild(tr);
+        });
+      }
+      return this;
     }
+  };
 
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
+  //検索ロジック※そう間違えたら通らない
+  document.getElementById("BtnSearch").addEventListener("click", () => {
+    func.searchPoke();
+  });
+
+  active = () => {
+    func
+      .init()
+      .initTypeTable()
+      .initRegionList()
+      .initGenList()
+      .searchPoke();
+    return;
   }
+  return (active);
+})();
+
+window.addEventListener('load', function(){
+  PokeSearch();
 });
-
-//検索時の基本情報取得(複数件)
-app.post("/api/poke/search", async (req, res) => {
-  try {
-    const { name, types, region, gen } = req.body;
-
-    let sql = `
-      SELECT
-        pokeid,
-        name,
-        type1,
-        type2,
-        region,
-        gen,
-        pathnormal,
-        pathshiny
-      FROM
-        viewpokedex
-      WHERE 1=1
-    `;
-
-    const params = [];
-
-    // 名前検索
-    if (name) {
-      params.push(`%${name}%`);
-      sql += ` AND name ILIKE $${params.length}`;
-    }
-
-    // タイプ検索
-    if (types && types.length > 0) {
-      sql += ` AND (type1 IN (
-                  SELECT type FROM tbltype WHERE typeid = ANY($${params.length + 1})
-                )
-                OR type2 IN (
-                  SELECT type FROM tbltype WHERE typeid = ANY($${params.length + 1})
-                ))`;
-      params.push(types);
-    }
-
-    // 地方検索
-    if (region) {
-      params.push(region);
-      sql += ` AND region = (
-                SELECT region FROM tblregion WHERE regionid = $${params.length}
-              )`;
-    }
-
-    // 世代検索
-    if (gen) {
-      params.push(gen);
-      sql += ` AND gen = (
-                SELECT gen FROM tblgen WHERE genid = $${params.length}
-              )`;
-    }
-
-    sql += " ORDER BY pokeid";
-
-    const result = await pool.query(sql, params);
-    res.json(result.rows);
-
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
-  }
-});
-
-
-//画像リスト取得
-app.get("/api/pokelist", async (req, res) => {
-  try {
-    const query = `
-      SELECT
-      pokeid,
-      pathnormal,
-      pathshiny
-      FROM
-      viewpokedex
-      ORDER BY
-      pokeid
-    `;
-
-    const result = await pool.query(query);
-    res.json(result.rows);
-
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
-  }
-});
-
-// サーバ起動
-app.listen(port, () => {
-  console.log(`Server started: http://localhost:${port}`);
-});
-//http://localhost:3001/api/poke?pokeid=5
-//http://localhost:3001/MyPokedex.html
-//c:\Users\takeshita\Desktop\JavaScriptの繋げ方.txt
