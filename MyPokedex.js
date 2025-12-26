@@ -27,6 +27,7 @@ const PokeProject = (() => {
   areaPokeType,
   areaPokeInfo,
   areaControlButtons,
+  areaSearchButton,
   areaDisplayPokeList,
 
   //HTML関連(挿入)
@@ -36,7 +37,7 @@ const PokeProject = (() => {
   htmlPokeType,
   htmlPokeInfo,
   htmlControlButtons,
-  htmlDisplayPokeList,
+  htmlSearchButton,
 
   //js上で必要となり得る要素
   func,
@@ -60,6 +61,7 @@ const PokeProject = (() => {
     fieldPokeInfo: `field-selected-poke-info`,
     fieldControlButtons: `field-control-buttons`,
     fieldDisplayPokeList: `field-display-poke-list`,
+    fieldSearchButton: `field-search-button`,
   };
   func = {
     init: function(){
@@ -105,6 +107,26 @@ const PokeProject = (() => {
         let BtnSwitchImage = document.getElementById('BtnSwitchImage');
         if(BtnSwitchImage)
           BtnSwitchImage.addEventListener('click', func.switchImage);
+      }
+      return this;
+    },
+    makeFieldSearchButton(){
+      if(flag){
+        areaSearchButton = document.querySelector(`[${conf.fieldSearchButton}]`);
+        htmlSearchButton =
+        `<button id="BtnSearch">検索</button>`;
+        //MySearchdex.htmlへリンクさせたい
+        areaSearchButton.insertAdjacentHTML('beforeend', htmlSearchButton);
+
+        let BtnSearch = document.getElementById(`BtnSearch`);
+        if(BtnSearch)
+          BtnSearch.addEventListener('click', func.linkSearch);
+      }
+      return this;
+    },
+    linkSearch(){
+      if(flag){
+        window.location.href = "MySearchdex.html";
       }
       return this;
     },
@@ -315,7 +337,7 @@ const PokeProject = (() => {
     makeFieldDisplayPokeList: async function(){
       if(flag){
         try{
-          const response = await fetch('http://localhost:3001/api/pokelist');
+          const response = await fetch('/api/pokelist');
           const data = await response.json();
 
           areaDisplayPokeList = document.querySelector(`[${conf.fieldDisplayPokeList}]`);
@@ -359,7 +381,8 @@ const PokeProject = (() => {
     func
       .init()
       .makeFieldPageTitle()
-      .makeFieldControlButtons();
+      .makeFieldControlButtons()
+      .makeFieldSearchButton();
 
       await func.getMinNo();
       await func.getMaxNo();
@@ -374,3 +397,44 @@ const PokeProject = (() => {
 window.addEventListener('load', function(){
   PokeProject();
 });
+//メソッド全体図
+
+//init
+//makeFieldTitle
+//makeFieldControlButtons
+//	[prevPoke]
+//	[nextPoke]
+//	[switchImage]
+
+//getMinNo(async)
+//getMaxNo(async)
+//getPokeData(async)
+//	[initFieldPokeData]
+//	[makeFieldPokeImage]
+//	[makeFieldPokeTitle]
+//	[makeFieldPokeType]
+//	[makeFieldPokeInfo]
+
+//initFieldPokeData
+//makeFieldPokeImage
+//makeFieldPokeTitle
+//makeFieldPokeType
+//makeFieldPokeInfo
+
+//prevPoke
+//nextPoke
+//switchImage
+//	[getPokeData]
+//	[makeFieldDisplayPokeList]
+
+//makeFieldDisplayPokeList(async)
+
+
+//active
+//	[init]
+//	[makeFieldPageTitle]
+//	[makeFieldControlButtons]
+//	[getMinNo]
+//	[getMaxNo]
+//	[getPokeData]
+//	[makeFieldDisplayPokeList]

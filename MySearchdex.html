@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>SearchDex</title>
+  <link rel="stylesheet" href="MySearchdex.css">
+</head>
+
+<body>
+
+  <!-- 上部タイトル -->
+  <div class="top">
+    <h1 class="top-title">SearchDex</h1>
+  </div>
+
+  <!-- 検索フィールド -->
+  <div class="search-wrapper">
+    <h3 class="search-label">検索フィールド</h3>
+
+    <div class="search-area">
+
+      <!-- 名前検索 -->
+      <div class="left-and-right">
+        <div class="left">名前:</div>
+        <div class="right">
+          <input type="text" id="TxtSearchName">
+        </div>
+      </div>
+
+      <!-- タイプ一覧（JSで画像を並べる） -->
+      <div id="TblSearchType" class="type-table"></div>
+
+      <!-- 地方 -->
+      <select id="DdlSearchRegion">
+        <option value="">地方を選択してください</option>
+      </select>
+
+      <!-- 世代 -->
+      <select id="DdlSearchGen">
+        <option value="">世代を選択してください</option>
+      </select>
+
+      <!-- 検索ボタン -->
+      <button id="BtnSearch">検索</button>
+
+    </div>
+  </div>
+
+  <!-- 検索結果 -->
+  <div class="middle">
+    <table class="poke-table">
+      <thead>
+        <tr>
+          <th>画像</th>
+          <th>番号</th>
+          <th>名前</th>
+          <th>タイプ</th>
+          <th>地方</th>
+          <th>世代</th>
+          <th>リンク</th>
+        </tr>
+      </thead>
+
+      <tbody id="SearchResultBody">
+        <!-- JS でここに結果を追加 -->
+      </tbody>
+    </table>
+
+    <p id="LblNoResult" class="no-result" style="display:none;">
+      見つかりませんでした。他の条件で検索してください。
+    </p>
+  </div>
+
+  <div class="bottom"></div>
+  <script src="MySearchdex.js"></script>
+
+</body>
+</html>
